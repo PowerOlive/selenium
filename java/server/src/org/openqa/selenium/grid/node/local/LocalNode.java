@@ -24,6 +24,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -467,7 +468,7 @@ public class LocalNode extends Node {
     }
   }
 
-  private void  killSession(SessionSlot slot) {
+  private void killSession(SessionSlot slot) {
     currentSessions.invalidate(slot.getSession().getId());
     // Attempt to stop the session
     if (!slot.isAvailable()) {

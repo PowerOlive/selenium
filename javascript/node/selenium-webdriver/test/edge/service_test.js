@@ -15,23 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.build;
+'use strict'
 
-import java.lang.management.ManagementFactory;
+const assert = require('assert')
+const edge = require('../../edge')
+const test = require('../../lib/test')
 
-public class Debug {
+test.suite(
+  function (_env) {
+    describe('msedgedriver', function () {
+      let service
 
-  private static boolean COMMAND_LINE_DEBUG = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
-    .map(str -> str.contains("-agentlib:jdwp"))
-    .reduce(Boolean::logicalOr)
-    .orElse(false);
-  private static boolean PROPERTY_DEBUG = Boolean.getBoolean("selenium.debug");
+      afterEach(function () {
+        if (service) {
+          return service.kill()
+        }
+      })
 
-  private Debug() {
-    // Utility class
-  }
+      it('can start msedgedriver', async function () {
+        service = new edge.ServiceBuilder().build()
 
-  public static boolean isDebug() {
-    return COMMAND_LINE_DEBUG || PROPERTY_DEBUG;
-  }
-}
+        let url = await service.start()
+        assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
+      })
+    })
+  },
+  { browsers: ['MicrosoftEdge'] }
+)
